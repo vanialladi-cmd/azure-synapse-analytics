@@ -1,0 +1,17 @@
+{
+	"name": "1_Exploring_Data_Synapse_SQL",
+	"properties": {
+		"content": {
+			"query": "-- database (logical container of related schemas/external tables/) creation\n-- Default schema where our tables are referred (dbo - database owner)\ncreate DATABASE synapsetraining;\n\nuse synapsetraining;\n\n-- to list the database names\nselect name from sys.databases;\n\n--How the table is accessed hierarchy in the Azure Synapse: dbname.schemaname.tablename\nselect * from vaniwd36.dbo.CallerDetails;\n\n--https (Object/Blob storage &slow)\n--openrowset : it is function to query data from underlying filesystem (datalake)\n--(instructing SQL engine to not consider data is inline in the SQL DB,\n-- rather it is in a open filesystem of set of files) \n--will instruct Synapse to access the large volume of data as a rowset using SQL engine\nSELECT *\nFROM\n    OPENROWSET(\n        BULK 'https://vanistorageadls.dfs.core.windows.net/container1/landing-zone/cust_hist_1.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = TRUE\n    ) AS [result]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "synapsetraining",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

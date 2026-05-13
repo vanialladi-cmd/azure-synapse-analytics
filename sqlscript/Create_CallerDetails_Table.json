@@ -1,0 +1,17 @@
+{
+	"name": "Create_CallerDetails_Table",
+	"properties": {
+		"content": {
+			"query": "-- 1. Create the File Format (tells SQL how to read the CSV)\nCREATE EXTERNAL FILE FORMAT [CSV_Format]\nWITH (\n    FORMAT_TYPE = DELIMITEDTEXT,\n    FORMAT_OPTIONS (\n        FIELD_TERMINATOR = ',',\n        STRING_DELIMITER = '\"',\n        FIRST_ROW = 2, -- Skips the header row\n        USE_TYPE_DEFAULT = FALSE\n    )\n);\n\n-- 2. Create the Data Source (points to your specific container)\nCREATE EXTERNAL DATA SOURCE [ADS_Container1]\nWITH (\n    LOCATION = 'https://vanistorageadls.dfs.core.windows.net/container1'\n);\n\nCREATE EXTERNAL TABLE dbo.CallerDetails (\n    [call_id] NVARCHAR(50),\n    [caller_id] BIGINT,\n    [receiver_id] BIGINT,\n    [duration] INT,\n    [call_type] NVARCHAR(20),\n    [tower_id] NVARCHAR(20),\n    [timestamp] DATETIME2,\n    [cost] DECIMAL(10, 2)\n)\nWITH (\n    LOCATION = 'landing-zone/cust_hist_1.csv',\n    DATA_SOURCE = [ADS_Container1], -- Must match the name created in Step 1\n    FILE_FORMAT = [CSV_Format]      -- Must match the name created in Step 1\n);",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "vaniwd36",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
